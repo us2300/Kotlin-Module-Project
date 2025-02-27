@@ -1,3 +1,7 @@
 fun main(args: Array<String>) {
-    println("Hello World!")
+    val archives = mutableListOf<Archive>()
+    val archiveMenu = NavigationMenu<Archive>()
+
+    archiveMenu.showMenu(archives)
+    archiveMenu.navigateMenu()
 }
