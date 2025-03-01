@@ -1,8 +1,7 @@
-class Archive(val name: String) {
-    private val notes = mutableListOf<Note>()
+class Archive(override val name: String) : MenuItem {
+    val notes = mutableListOf<Note>()
 
     override fun toString(): String {
-        return this.name
+        return name
     }
-
 }

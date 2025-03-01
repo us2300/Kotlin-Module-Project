@@ -1,43 +1,50 @@
+import java.util.InputMismatchException
 import java.util.Scanner
 
-class NavigationMenu<T> {
-    private val menuItems = mutableListOf<String>()
+class NavigationMenu<T : MenuItem>(
+    private val name: String, // Шапка меню
+    private val createMessage: String, // Сообщение для пункта меню по созданию экземпляра класса
+    private val menuItems: MutableList<T>,
 
-    fun showMenu(elements: List<T>) {
-        println("Список архивов:")
+    val onCreate: () -> Unit,
+    val onItemSelect: (T) -> Unit,
+    val onExit: () -> Unit
+) {
 
-        menuItems.add("0. Создать архив")
-        println(menuItems[0])
+    fun showMenu() {
+        println("$name:")
+        println("0. $createMessage")
 
-        for (i in elements.indices) {
-            menuItems.add("${i + 1}. ${elements[i]}")
-            println(menuItems[i])
+        for (i in menuItems.indices) {
+            println("${i + 1}. ${menuItems[i]}")
         }
 
-        menuItems.add("${menuItems.size + 1}. Выход")
+        println("${menuItems.size + 1}. Выход")
+
+        navigateMenu()
     }
 
-    fun navigateMenu() {
-
+    private fun navigateMenu() {
         while (true) {
-            var input: Int = -1
+            try {
+                println("Для навигации введите цифру-индекс пункта меню")
+                println()
 
-            if (Scanner(System.`in`).hasNextInt()) {
-                input = Scanner(System.`in`).nextInt()
-            } else {
-                println("Необходимо ввести цифру")
+                when (val input: Int = Scanner(System.`in`).nextInt()) {
+                    0 -> onCreate()
+                    in 1..menuItems.size -> onItemSelect(menuItems[input - 1])
+                    menuItems.size + 1 -> {
+                        onExit()
+                        return
+                    }
+                    else -> {
+                        println("Введенная цифра вне диапазона меню")
+                        continue
+                    }
+                }
+            } catch (e: InputMismatchException) {
+                println("Ввод должен состоять из цифры")
                 continue
-            }
-
-            if (input > menuItems.lastIndex || input < 0) {
-                println("Введенная цифра вне диапазона меню")
-                continue
-            }
-
-            when (input) {
-                0 -> StoredData.
-                menuItems.lastIndex -> TODO("Выход")
-                else -> TODO("Перейти к архиву menu[input - 1]")
             }
         }
     }
